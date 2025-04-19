@@ -6,31 +6,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $price = $_POST['price'];
   $rating = $_POST['rating'];
   $image = $_FILES['image']['name'];
-  $target = "image/" . basename($image); // updated to match your actual folder
-  
+  $target = "image/" . basename($image);
+
   if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
     mysqli_query($conn, "INSERT INTO products (name, price, rating, image) VALUES ('$name', '$price', '$rating', '$image')");
-    header("Location: client_products.php");
+    header("Location: ProductMGT.php");
   } else {
     echo "Failed to upload image.";
   }
 }
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Product</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/add_product.css">
+</head>
+<body>
 
 <h2>Add New Product</h2>
+
 <form method="post" enctype="multipart/form-data">
-  <label>Product Name:</label><br>
-  <input type="text" name="name" required><br><br>
+  <label for="name">Product Name:</label>
+  <input type="text" name="name" required>
 
-  <label>Price:</label><br>
-  <input type="number" step="0.01" name="price" required><br><br>
+  <label for="price">Price:</label>
+  <input type="number" step="0.01" name="price" required>
 
-  <label>Rating:</label><br>
-  <input type="number" step="0.1" name="rating" min="1" max="5" required><br><br>
+  <label for="rating">Rating:</label>
+  <input type="number" step="0.1" name="rating" min="1" max="5" required>
 
-  <label>Image:</label><br>
-  <input type="file" name="image" accept="image/*" required><br><br>
+  <label for="image">Image:</label>
+  <input type="file" name="image" accept="image/*" required>
 
   <button type="submit">Add Product</button>
 </form>
+
+</body>
+</html>

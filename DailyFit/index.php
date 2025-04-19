@@ -32,7 +32,7 @@
              </svg>
             </a>
             <ul class="dropdown-menu">
-          <li><a href="product.php">All Products</a></li>
+          <li><a href="allproduct.php">All Products</a></li>
           <li><a href="">T-Shirts</a></li>
           <li><a href="#shorts">Shorts</a></li>
           <li><a href="#hoodies">Hoodies</a></li>
@@ -134,7 +134,7 @@
       </div>
   
       <div class="view-all">
-        <button class="btn btn-outline btn-lg"><a href="product.php">
+        <button class="btn btn-outline btn-lg"><a href="allproduct.php">
         View All Products
         </a>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
