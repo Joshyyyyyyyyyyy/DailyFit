@@ -65,7 +65,7 @@ if (isset($_GET['delete_allproduct'])) {
   <!-- SECTION 2: FOR ALL PRODUCT -->
   <div class="section">
     <h2>FOR ALL PRODUCT</h2>
-    <a href="upload.php" class="btn">Add New Product</a>
+    <a href="uploadMGT.php" class="btn">Add New Product</a>
     <div class="table-container">
       <table>
         <thead>

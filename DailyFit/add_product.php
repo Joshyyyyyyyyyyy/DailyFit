@@ -2,6 +2,15 @@
 include 'db_conn.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  // Count total products in the table
+  $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM products");
+  $data = mysqli_fetch_assoc($result);
+
+  if ($data['total'] >= 4) {
+    echo "<script>alert('Limit reached. Only 4 products allowed. Please edit or delete an existing one.'); window.location.href='ProductMGT.php';</script>";
+    exit();
+  }
+
   $name = $_POST['name'];
   $price = $_POST['price'];
   $rating = $_POST['rating'];
@@ -16,6 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">

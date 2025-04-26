@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 
   mysqli_query($conn, "UPDATE products SET name='$name', price='$price', rating='$rating', image='$image' WHERE id=$id");
-  header("Location: ProductMGT.php");
+  header("Location: add_product.php");
 }
 ?>
 
@@ -27,104 +27,142 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <title>Edit Product</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-image: linear-gradient(109.6deg, #1a1a1a 71.8%, #2b2b2b 71.8%);
-      color: #fff;
-    }
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: linear-gradient(109.6deg, #1a1a1a 71.8%, #2b2b2b 71.8%);
+  color: #fff;
+  padding: 30px;
+}
 
-    h2 {
-      text-align: center;
-      padding: 20px 0;
-      font-size: 28px;
-    }
+h2 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
 
-    form {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      max-width: 600px;
-      margin: auto;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    }
+form {
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 15px;
+}
 
-    label {
-      font-weight: 500;
-      margin-top: 10px;
-      display: block;
-    }
+.form-row {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
 
-    input[type="text"],
-    input[type="number"],
-    input[type="file"] {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      border: none;
-      border-radius: 8px;
-      background-color: #333;
-      color: #fff;
-    }
+.form-column {
+  flex: 1;
+  min-width: 300px;
+}
 
-    img {
-      display: block;
-      margin: 10px 0;
-      border-radius: 8px;
-      max-width: 100px;
-    }
+label {
+  font-weight: 500;
+  margin-top: 10px;
+  display: block;
+}
 
-    button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      background-color: #1b3ba3;
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+input[type="text"],
+input[type="number"],
+input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #333;
+  color: #fff;
+}
 
-    button:hover {
-      background-color: #355edc;
-    }
+input[type="file"] {
+  background-color: #2a2a2a;
+}
 
-    @media (max-width: 600px) {
-      form {
-        padding: 20px;
-      }
+img {
+  display: block;
+  margin: 10px 0;
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
 
-      h2 {
-        font-size: 24px;
-      }
-    }
+button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background-color: #1b3ba3;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: fit-content;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button:hover {
+  background-color: #355edc;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    padding: 20px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+}
+
   </style>
 </head>
 <body>
+<body>
+  <div class="container">
+    <h2> Edit Product</h2>
+    <form method="post" enctype="multipart/form-data">
+      <div class="form-row">
+        <div class="form-column">
+          <label>Product Name: </label>
+          <input type="text" name="name" value="<?= $product['name'] ?>" required>
 
-<h2>🛠️ Edit Product</h2>
-<form method="post" enctype="multipart/form-data">
-  <label>Product Name:</label>
-  <input type="text" name="name" value="<?= $product['name'] ?>" required>
+          <label>Price:</label>
+          <input type="number" step="0.01" name="price" value="<?= $product['price'] ?>" required>
 
-  <label>Price:</label>
-  <input type="number" step="0.01" name="price" value="<?= $product['price'] ?>" required>
+          <label>Rating:</label>
+          <input type="number" step="0.1" name="rating" value="<?= $product['rating'] ?>" required>
+        </div>
 
-  <label>Rating:</label>
-  <input type="number" step="0.1" name="rating" value="<?= $product['rating'] ?>" required>
+        <div class="form-column">
+          <label>Current Image:</label>
+          <img src="uploads/<?= $product['image'] ?>" alt="Product Image">
 
-  <label>Current Image:</label>
-  <img src="uploads/<?= $product['image'] ?>" alt="Product Image">
+          <label>Upload New Image (Optional):</label>
+          <input type="file" name="image" accept="image/*">
+        </div>
+      </div>
 
-  <label>Upload New Image (Optional):</label>
-  <input type="file" name="image" accept="image/*">
-
-  <button type="submit">Update Product</button>
-</form>
+      <button type="submit">Update Product</button>
+    </form>
+  </div>
+</body>
 
 </body>
 </html>

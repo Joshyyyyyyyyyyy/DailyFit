@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Fit</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/gallery.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <script src="js/script.js" defer></script>
 </head>
@@ -38,17 +39,14 @@
           <li><a href="#hoodies">Hoodies</a></li>
         </ul>
       </li>
+      <li><a href="#gallery">Gallery</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
-  
-      <li class="search">
-        <input type="text" placeholder="Search..." />
-      </li>         
+          
           </ul>
         </nav>
         <div class="header-buttons">
-          <button class="btn btn-outline" ><a href="login.php">Signup</a></button>
-          <button class="btn btn-primary">Shop Now</button>
+          <button class="btn btn-outline" onclick="window.location.href='login.html'">Admin</button>
         </div>
         <button class="mobile-menu-btn" id="mobile-menu-btn">
           <span></span>
@@ -59,8 +57,9 @@
     </div>
     <nav class="nav-mobile" id="nav-mobile">
       <ul>
-        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#home" class="active">Home</a></li>
         <li><a href="#products">Products</a></li>
+        <li><a href="#gallery">Gallery</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -85,7 +84,6 @@
                 <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
             </button>
-            <button class="btn btn-outline btn-lg">Learn More</button>
           </div>
         </div>
         <div class="hero-image">
@@ -144,7 +142,54 @@
       </div>
     </div>
   </section>
-  
+  <section id="gallery" class="gallery">
+        <div class="section-title">
+            <h2>Customer Gallery</h2>
+            <p>Big love to our repeat buyers and a huge welcome to our new fam!
+              Thank you for rocking with Daily Fit — your support keeps the streetwear culture alive.
+              Stay bold, stay fresh, stay Daily.</p>
+        </div>
+        
+        <div class="gallery-container">
+            <div class="gallery-item" data-category="casual">
+                <img src="image/c10.jpg" alt="Customer in Casual Outfit">
+            </div>
+            <div class="gallery-item" data-category="formal">
+                <img src="image/c12.jpg" alt="Customer in Formal Outfit">
+            </div>
+            <div class="gallery-item" data-category="streetwear">
+                <img src="image/c13.jpg" alt="Customer in Streetwear">
+            </div>
+            <div class="gallery-item" data-category="casual">
+                <img src="image/c4.jpg" alt="Customer in Casual Outfit">
+            </div>
+            <div class="gallery-item" data-category="formal">
+                <img src="image/c1.jpg" alt="Customer in Formal Dress">
+            </div>
+            <div class="gallery-item" data-category="streetwear">
+                <img src="image/c16.jpg" alt="Customer in Streetwear">
+            </div>
+            <div class="gallery-item" data-category="casual">
+                <img src="image/c17.jpg" alt="Customer in Casual T-shirt">
+            </div>
+            <div class="gallery-item" data-category="formal">
+                <img src="image/c9.jpg" alt="Customer in Blazer">
+            </div>
+            <div class="gallery-item" data-category="casual">
+                <img src="image/c3.jpg" alt="Customer in Jeans">
+            </div>
+            <div class="gallery-item" data-category="streetwear">
+                <img src="image/c7.jpg" alt="Customer in Urban Style">
+            </div>
+            <div class="gallery-item" data-category="formal">
+                <img src="image/c6.jpg" alt="Customer in Elegant Outfit">
+            </div>
+            <div class="gallery-item" data-category="casual">
+                <img src="image/c5.jpg" alt="Customer in Sweater">
+            </div>
+        </div>
+    </section>
+    
   <!-- About Section -->
   <section id="about" class="about">
     <div class="container">
@@ -153,9 +198,9 @@
           <img src="image/logo.jpg" alt="Our store">
         </div>
         <div class="about-text">
-          <h2>Our Story</h2>
-          <p>Founded in 2010, ELEGANCE has been dedicated to providing high-quality, stylish clothing that combines comfort with contemporary design. Our team of experienced designers works tirelessly to create pieces that help you express your unique style.</p>
-          <p>We believe in sustainable fashion and ethical manufacturing. All our garments are produced using eco-friendly materials and processes, ensuring that we minimize our environmental impact while maximizing style and comfort.</p>
+          <h2>Who we are?</h2>
+          <p>Daily Fit is a bold and dynamic streetwear brand dedicated to elevating everyday fashion. We specialize in high-quality shirts, shorts, hoodies, sweatshirts, and accessories that combine comfort with standout style. In a competitive market of streetwear brands, Daily Fit sets itself apart with statement-making designs that reflect confidence and individuality.</p>
+          <p>Our mission is to empower people to express themselves through fashion that’s fresh, fearless, and unapologetically unique.</p>
         </div>
       </div>
     </div>

@@ -61,31 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
           this.classList.toggle('active');
       });
   }
-  
-  // Filter functionality
-  filterButtons.forEach(button => {
-      button.addEventListener('click', function(e) {
-          e.preventDefault();
-          
-          // Update active state
-          filterButtons.forEach(btn => btn.classList.remove('active'));
-          this.classList.add('active');
-          
-          // Get filter value
-          currentFilter = this.textContent.toLowerCase();
-          
-          // Filter products
-          filterProducts();
-          
-          // Reset to first page
-          currentPage = 1;
-          updatePagination();
-          showCurrentPageProducts();
-          
-          // Update active filters display
-          updateActiveFilters();
-      });
-  });
+
   
   // Function to filter products
   function filterProducts() {
@@ -141,72 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelector('.products-header').scrollIntoView({ behavior: 'smooth' });
   }
   
-  // Pagination functionality
-  paginationLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
-          e.preventDefault();
-          
-          if (this.classList.contains('prev')) {
-              if (currentPage > 1) {
-                  currentPage--;
-              }
-          } else if (this.classList.contains('next')) {
-              const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-              if (currentPage < totalPages) {
-                  currentPage++;
-              }
-          } else {
-              currentPage = parseInt(this.textContent);
-          }
-          
-          updatePagination();
-          showCurrentPageProducts();
-      });
-  });
   
-  // Update pagination based on filtered products
-  function updatePagination() {
-      const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-      
-      // Update active state
-      paginationLinks.forEach(link => {
-          if (!link.classList.contains('prev') && !link.classList.contains('next')) {
-              const pageNum = parseInt(link.textContent);
-              if (pageNum === currentPage) {
-                  link.classList.add('active');
-              } else {
-                  link.classList.remove('active');
-              }
-              
-              // Hide page numbers that are beyond total pages
-              if (pageNum > totalPages) {
-                  link.style.display = 'none';
-              } else {
-                  link.style.display = 'flex';
-              }
-          }
-      });
-      
-      // Disable prev/next buttons if at first/last page
-      const prevBtn = document.querySelector('.page-link.prev');
-      const nextBtn = document.querySelector('.page-link.next');
-      
-      if (prevBtn) {
-          if (currentPage === 1) {
-              prevBtn.classList.add('disabled');
-          } else {
-              prevBtn.classList.remove('disabled');
-          }
-      }
-      
-      if (nextBtn) {
-          if (currentPage === totalPages || totalPages === 0) {
-              nextBtn.classList.add('disabled');
-          } else {
-              nextBtn.classList.remove('disabled');
-          }
-      }
-  }
   
   // Quick view functionality
   quickViewButtons.forEach(button => {
@@ -376,7 +287,4 @@ document.addEventListener('DOMContentLoaded', function() {
           });
       }
   }
-  
-  // Initialize
-  updatePagination();
 });

@@ -1,11 +1,51 @@
+
 <?php
-include 'db_conn.php';
+include('db_conn.php');
+// Initialize the session
 session_start();
 
 // Check if the user is logged in, if not then redirect to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.html");
     exit;
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $name = $_POST['name'];
+  $price = $_POST['price'];
+  $rating = $_POST['rating'];
+  $image = $_FILES['image']['name'];
+  $target = "image/" . basename($image);
+
+  if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+    mysqli_query($conn, "INSERT INTO products (name, price, rating, image) VALUES ('$name', '$price', '$rating', '$image')");
+    header("Location: admin_product.php");
+  } else {
+    echo "Failed to upload image.";
+  }
+}
+
+if (isset($_POST['submit'])) {
+  $title = $_POST['title'];
+  $price = $_POST['price'];
+  $badge = $_POST['badge'];
+  $description = $_POST['description'];
+  $color1 = $_POST['color1'];
+  $color2 = $_POST['color2'];
+  $color3 = $_POST['color3'];
+  $category = $_POST['category']; // Get the category from the form
+
+  // Image upload
+  $imageName = $_FILES['image']['name'];
+  $imageTmp = $_FILES['image']['tmp_name'];
+  $target = "image/" . basename($imageName);
+  move_uploaded_file($imageTmp, $target);
+
+  // Insert the product along with the category
+  $sql = "INSERT INTO allproduct (title, price, badge, description, color1, color2, color3, image, category) 
+          VALUES ('$title', '$price', '$badge', '$description', '$color1', '$color2', '$color3', '$target', '$category')";
+  $conn->query($sql);
+
+  echo "<script>alert('Product uploaded successfully!'); window.location='admin_product.php';</script>";
 }
 ?>
 <!DOCTYPE html>
@@ -15,6 +55,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Fit</title>
   <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/upload.css">
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Chart.js for charts -->
@@ -41,7 +82,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
       <div class="sidebar-content">
         <nav class="sidebar-menu">
           <ul>
-            <li>
+            <li class="#">
               <a href="admin.php">
                 <i class="fas fa-home"></i>
                 <span>Dashboard</span>
@@ -118,119 +159,66 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
               <a href="#account"><i class="fas fa-cog"></i> Account Settings</a>
               <a href="#help"><i class="fas fa-question-circle"></i> Help Center</a>
               <div class="dropdown-divider"></div>
-              <a href="#logout" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+              <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
           </div>
         </div>
       </header>
 
-  <?php
-
-
-  // DELETE for client_products table
-  if (isset($_GET['delete_product'])) {
-      $id = $_GET['delete_product'];
-      mysqli_query($conn, "DELETE FROM products WHERE id = $id");
-  }
-
-  // DELETE for allproduct table
-  if (isset($_GET['delete_allproduct'])) {
-      $id = $_GET['delete_allproduct'];
-      mysqli_query($conn, "DELETE FROM allproduct WHERE id = $id");
-      echo "<script>alert('Product deleted successfully!'); window.location='admin_product.php';</script>";
-  }
-  ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Manage Products</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="css/ProductMGT.css">
-</head>
-<body>
-
-  <!-- SECTION 1: DAILYFIT PRODUCT MANAGEMENT -->
-  <div class="section">
-    <h2>DAILY FIT PRODUCT MANAGEMENT</h2>
-    <p>FOR BEST SALE ONLY</p>
-    <a href="addf.php" class="btn">Add New Product</a>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Rating</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-          $result1 = mysqli_query($conn, "SELECT * FROM products");
-          while ($row = mysqli_fetch_assoc($result1)):
-          ?>
-          <tr>
-            <td><img src="image/<?= $row['image'] ?>" width="80"></td>
-            <td><?= $row['name'] ?></td>
-            <td>$<?= $row['price'] ?></td>
-            <td><?= $row['rating'] ?></td>
-            <td class="actions">
-              <a href="editf.php?id=<?= $row['id'] ?>" class="btn">Edit</a>
-              <a href="?delete_product=<?= $row['id'] ?>" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
-            </td>
-          </tr>
-          <?php endwhile; ?>
-        </tbody>
-      </table>
+     
+      <h2>Add New Product</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <div>
+      <label>Product Title</label>
+      <input type="text" name="title" placeholder="Enter product title" required>
     </div>
-  </div>
 
-  <!-- SECTION 2: FOR ALL PRODUCT -->
-  <div class="section">
-  <h2>FOR ALL PRODUCT</h2>
-  <a href="uploadMGT.php" class="btn">Add New Product</a>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Price</th>
-          <th>Badge</th>
-          <th>Description</th>
-          <th>Category</th> <!-- ✅ New column -->
-          <th>Image</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php
-        $result2 = mysqli_query($conn, "SELECT * FROM allproduct");
-        while ($row = mysqli_fetch_assoc($result2)):
-        ?>
-        <tr>
-          <td><?= $row['title']; ?></td>
-          <td>₱<?= number_format($row['price'], 2); ?></td>
-          <td><?= $row['badge']; ?></td>
-          <td><?= $row['description']; ?></td>
-          <td><?= $row['category']; ?></td> 
-          <td><img src="<?= $row['image']; ?>" width="60" height="60"></td>
-          <td class="actions">
-            <a href="updateMGT.php?id=<?= $row['id']; ?>" class="btn">Edit</a>
-            <a href="?delete_allproduct=<?= $row['id']; ?>" onclick="return confirm('Are you sure?')" class="btn btn-danger">Delete</a>
-          </td>
-        </tr>
-        <?php endwhile; ?>
-      </tbody>
-    </table>
-  </div>
-</div>
+    <div>
+      <label>Price</label>
+      <input type="number" step="0.01" name="price" placeholder="Enter price" required>
+    </div>
 
-</body>
-</html>
+    <div>
+      <label>Badge</label>
+      <input type="text" name="badge" placeholder="New / Sale / Hot">
+    </div>
 
+    <div>
+      <label>Description</label>
+      <textarea name="description" placeholder="Enter product description" required></textarea>
+    </div>
+
+    <div>
+      <label>Category</label>
+      <select name="category" required>
+        <option value="">Select Category</option>
+        <option value="T-shirt">T-shirt</option>
+        <option value="Hoodie">Hoodie</option>
+        <option value="Shorts">Shorts</option>
+        <option value="accessories">Accessories</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Image</label>
+      <input type="file" name="image" accept="image/*" required>
+    </div>
+
+    <div>
+      <label>Product Colors</label>
+      <div class="color-container">
+        <input type="color" name="color1" required>
+        <input type="color" name="color2" required>
+        <input type="color" name="color3" required>
+      </div>
+    </div>
+
+    <div style="grid-column: span 2; text-align: center;">
+      <button type="submit" name="submit" style="background-color: #ffd300;" >Upload Product</button>
+    </div>
+
+    <a href="admin_product.php">← Back to Product List</a>
+  </form>
       
     </main>
   </div>

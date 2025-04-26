@@ -10,7 +10,67 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Header -->
+  <style>
+ .products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Force consistent height and layout for cards */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Stretch product-info to fill remaining space */
+.product-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.search-bar-container {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.search-form {
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.search-form input[type="text"] {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.search-form button {
+  background-color: #FFD700;
+  border: none;
+  padding: 0 1rem;
+  cursor: pointer;
+  color: #1a1a1a;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.search-form button:hover {
+  background-color: #e6c200;
+}
+
+  </style>
   <header class="header">
     <div class="container">
       <div class="header-content">
@@ -39,13 +99,13 @@
           <li><a href="#hoodies">Hoodies</a></li>
         </ul>
       </li>
+            <li><a href="index.php">Gallery</a></li>
             <li><a href="index.php">About</a></li>
             <li><a href="index.php">Contact</a></li>
           </ul>
         </nav>
         <div class="header-buttons">
-          <button class="btn btn-outline" onclick="window.location.href='login.php'">Sign In</button>
-          <button class="btn btn-primary">Shop Now</button>
+          <button class="btn btn-outline" onclick="window.location.href='login.html'">Sign In</button>
         </div>
         <button class="mobile-menu-btn" id="mobile-menu-btn">
           <span></span>
@@ -77,33 +137,41 @@
           <p>Browse our collection of premium clothing</p>
         </div>
 
-        <!-- Filters -->
-        <div class="filter-container">
-          <div class="filter-title">Filter by:</div>
-          <div class="filter-options">
-            <a href="#" class="filter-btn active">All</a>
-            <a href="#" class="filter-btn">T-shirts</a>
-            <a href="#" class="filter-btn">Hoodies</a>
-            <a href="#" class="filter-btn">Shorts</a>
-          </div>
-        </div>
+       <!-- Search Bar -->
+<div class="search-bar-container">
+  <form method="GET" class="search-form">
+    <input type="text" name="search" placeholder="Search products..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+    <button type="submit"><i class="fas fa-search"></i></button>
+  </form>
+</div>
 
-        <!-- Products Grid -->
-        <div class="products-grid">
-        <?php
+
+       <!-- Products Grid --> 
+<div class="products-grid">
+<?php
 $conn = new mysqli("localhost", "root", "", "dailyfit");
 
 // Pagination setup
 $limit = 16;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+$search = isset($_GET['search']) ? trim($conn->real_escape_string($_GET['search'])) : '';
+$whereClause = $search ? "WHERE title LIKE '%$search%' OR description LIKE '%$search%'" : "";
+
+// Get total rows for pagination
+$countResult = $conn->query("SELECT COUNT(*) as total FROM allproduct $whereClause");
+$totalRows = $countResult->fetch_assoc()['total'];
+$totalPages = max(ceil($totalRows / $limit), 1);
+$page = min($page, $totalPages); // Prevent out-of-range pages
+
 $start = ($page - 1) * $limit;
 
 // Fetch products
-$sql = "SELECT * FROM allproduct ORDER BY id DESC LIMIT $start, $limit";
+$sql = "SELECT * FROM allproduct $whereClause ORDER BY id DESC LIMIT $start, $limit";
 $result = $conn->query($sql);
 
-// Display product cards
-while ($row = $result->fetch_assoc()):
+// Display products
+if ($result->num_rows > 0):
+    while ($row = $result->fetch_assoc()):
 ?>
   <div class="product-card">
     <div class="product-badge <?php echo strtolower(htmlspecialchars($row['badge'])); ?>">
@@ -118,40 +186,52 @@ while ($row = $result->fetch_assoc()):
     </div>
     <div class="product-info">
       <h3 class="product-title"><?php echo htmlspecialchars($row['title']); ?></h3>
-      
-      <p class="product-description">   
-        <?php echo htmlspecialchars($row['description']); ?>
-      </p>
-
+      <p class="product-description"><?php echo htmlspecialchars($row['description']); ?></p>
       <div class="product-price">₱<?php echo number_format($row['price'], 2); ?></div>
-
       <div class="product-colors">
         <span class="color-dot" style="background-color: <?php echo htmlspecialchars($row['color1']); ?>;"></span>
         <span class="color-dot" style="background-color: <?php echo htmlspecialchars($row['color2']); ?>;"></span>
         <span class="color-dot" style="background-color: <?php echo htmlspecialchars($row['color3']); ?>;"></span>
       </div>
-
       <button class="add-to-cart">Add to Cart</button>
     </div>
   </div>
-<?php endwhile; ?>
+<?php 
+    endwhile; 
+else: 
+?>
+  <p style="color: white; text-align: center; width: 100%;">No products found on this page.</p>
+<?php 
+endif; 
+?>
+</div>
+
+<?php
+// Pagination links
+if ($totalPages > 1) {
+  echo '<div class="pagination">';
+  $queryString = $search ? '&search=' . urlencode($search) : '';
+
+  if ($page > 1) {
+    echo '<a href="?page=' . ($page - 1) . $queryString . '" class="page-link prev"><i class="fas fa-chevron-left"></i></a>';
+  }
+
+  for ($i = 1; $i <= $totalPages; $i++) {
+    $active = $i == $page ? 'active' : '';
+    echo '<a href="?page=' . $i . $queryString . '" class="page-link ' . $active . '">' . $i . '</a>';
+  }
+
+  if ($page < $totalPages) {
+    echo '<a href="?page=' . ($page + 1) . $queryString . '" class="page-link next"><i class="fas fa-chevron-right"></i></a>';
+  }
+
+  echo '</div>';
+}
+?>
 
 
-        <!-- Pagination -->
-        <div class="pagination">
-          <a href="#" class="page-link prev" aria-label="Previous page">
-            <i class="fas fa-chevron-left"></i>
-          </a>
-          <a href="#" class="page-link active">1</a>
-          <a href="#" class="page-link">2</a>
-          <a href="#" class="page-link">3</a>
-          <a href="#" class="page-link">4</a>
-          <span class="page-ellipsis">...</span>
-          <a href="#" class="page-link">10</a>
-          <a href="#" class="page-link next" aria-label="Next page">
-            <i class="fas fa-chevron-right"></i>
-          </a>
-        </div>
+
+      
       </div>
     </section>
   </main>

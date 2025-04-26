@@ -172,7 +172,6 @@
   
   .sidebar-toggle:hover {
     background-color: var(--hover-bg);
-    color: var(--text-color);
   }
   
   .sidebar-content {

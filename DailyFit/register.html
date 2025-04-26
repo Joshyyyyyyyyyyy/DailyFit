@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - User Authentication System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="register-container">
+            <div class="register-card">
+                <div class="register-header">
+                    <div class="logo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                          </svg>
+                        <h1> Create Account</h1>
+                    </div>
+                    <div class="theme-toggle">
+                        <input type="checkbox" id="theme-toggle-checkbox">
+                        <label for="theme-toggle-checkbox" class="theme-toggle-label">
+                            <i class="fas fa-sun"></i>
+                            <i class="fas fa-moon"></i>
+                            <span class="toggle-ball"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="register-body">
+                    <h2>Create an Account</h2>
+                    <p class="register-subtitle">Fill out the form below to get started</p>
+                    
+                    <div class="register-alert error" id="register-error" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Error message goes here.</span>
+                    </div>
+                    
+                    <form id="register-form" class="register-form" action="register.php" method="post">
+                        <div class="form-layout">
+                            <!-- Left Column -->
+                            <div class="form-column">
+                                <h3 class="section-title">Personal Information</h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="first-name">First Name</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-user"></i>
+                                            <input type="text" id="first-name" name="first_name" placeholder="Enter first name" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="last-name">Last Name</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-user"></i>
+                                            <input type="text" id="last-name" name="last_name" placeholder="Enter last name" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="email">Email Address</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-envelope"></i>
+                                            <input type="email" id="email" name="email" placeholder="Enter email address" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="phone">Phone Number</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-phone"></i>
+                                            <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="company">Company Name (Optional)</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-building"></i>
+                                        <input type="text" id="company" name="company" placeholder="Enter company name">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Column -->
+                            <div class="form-column">
+                                <h3 class="section-title">Account Security</h3>
+                                
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-lock"></i>
+                                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                                        <button type="button" class="toggle-password">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="password-strength">
+                                        <div class="strength-meter">
+                                            <div class="strength-meter-fill" data-strength="0"></div>
+                                        </div>
+                                        <div class="strength-text">Password strength: <span>Too weak</span></div>
+                                    </div>
+                                    
+                                    <div class="password-requirements">
+                                        <ul>
+                                            <li class="requirement" data-requirement="length">At least 8 characters</li>
+                                            <li class="requirement" data-requirement="uppercase">At least one uppercase letter</li>
+                                            <li class="requirement" data-requirement="lowercase">At least one lowercase letter</li>
+                                            <li class="requirement" data-requirement="number">At least one number</li>
+                                            <li class="requirement" data-requirement="special">At least one special character</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="confirm-password">Confirm Password</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-lock"></i>
+                                        <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm password" required>
+                                        <button type="button" class="toggle-password">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="terms" name="terms" required>
+                                        <span class="checkmark"></span>
+                                        I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="newsletter" name="newsletter" checked>
+                                        <span class="checkmark"></span>
+                                        Subscribe to our newsletter for updates
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <a href="login.html" class="cancel-button">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="register-button" >
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="register-footer">
+                    <p>Already have an account? <a href="login.html">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/register.js"></script>
+</body>
+</html>

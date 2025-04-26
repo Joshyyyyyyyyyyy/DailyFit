@@ -1,11 +1,30 @@
+
 <?php
 include 'db_conn.php';
 session_start();
 
-// Check if the user is logged in, if not then redirect to login page
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("location: login.html");
-    exit;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  // Count total products in the table
+  $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM products");
+  $data = mysqli_fetch_assoc($result);
+
+  if ($data['total'] >= 4) {
+    echo "<script>alert('Limit reached. Only 4 products allowed. Please edit or delete an existing one.'); window.location.href='admin_product.php';</script>";
+    exit();
+  }
+
+  $name = $_POST['name'];
+  $price = $_POST['price'];
+  $rating = $_POST['rating'];
+  $image = $_FILES['image']['name'];
+  $target = "image/" . basename($image);
+
+  if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+    mysqli_query($conn, "INSERT INTO products (name, price, rating, image) VALUES ('$name', '$price', '$rating', '$image')");
+    header("Location: admin_product.php");
+  } else {
+    echo "Failed to upload image.";
+  }
 }
 ?>
 <!DOCTYPE html>
@@ -15,11 +34,85 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Fit</title>
   <link rel="stylesheet" href="css/admin.css">
-  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Chart.js for charts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+<style>
+  
+  body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+h2 {
+  margin-top: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+form {
+  padding: 5%;
+  border-radius: 16px;
+  display: grid;
+  gap: 25px 40px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"] {
+  width: 100%;
+  border-color: #333;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+
+button {
+  grid-column: span 2;
+  padding: 14px;
+  font-size: 16px;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color:rgb(221, 184, 0);
+}
+
+@media (max-width: 768px) {
+  form {
+    grid-template-columns: 1fr;
+    padding: 25px;
+  }
+
+  button {
+    grid-column: span 1;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+}
+
+
+</style>
 <body class="light-mode">
   <div class="admin-container">
     <!-- Sidebar -->
@@ -118,119 +211,33 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
               <a href="#account"><i class="fas fa-cog"></i> Account Settings</a>
               <a href="#help"><i class="fas fa-question-circle"></i> Help Center</a>
               <div class="dropdown-divider"></div>
-              <a href="#logout" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+              <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
           </div>
         </div>
       </header>
 
-  <?php
+      <div class="container">
+    <h2>Add New Product</h2>
+    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
+  <label for="name">Product Name:</label>
+  <input type="text" name="name" placeholder="Enter the name"required>
 
+  <label for="price">Price:</label>
+  <input type="number" step="0.01" name="price" placeholder="Enter the price" required>
 
-  // DELETE for client_products table
-  if (isset($_GET['delete_product'])) {
-      $id = $_GET['delete_product'];
-      mysqli_query($conn, "DELETE FROM products WHERE id = $id");
-  }
+  <label for="rating">Rating:</label>
+  <input type="number" step="0.1" name="rating" min="1" max="5" placeholder="Rate 1-5 "required>
 
-  // DELETE for allproduct table
-  if (isset($_GET['delete_allproduct'])) {
-      $id = $_GET['delete_allproduct'];
-      mysqli_query($conn, "DELETE FROM allproduct WHERE id = $id");
-      echo "<script>alert('Product deleted successfully!'); window.location='admin_product.php';</script>";
-  }
-  ?>
+  <label for="image">Image:</label>
+  <input type="file" name="image" accept="image/*" required>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Manage Products</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="css/ProductMGT.css">
-</head>
-<body>
+  <button type="submit" style="background-color: #ffd300;">Add Product</button>
+</form>
 
-  <!-- SECTION 1: DAILYFIT PRODUCT MANAGEMENT -->
-  <div class="section">
-    <h2>DAILY FIT PRODUCT MANAGEMENT</h2>
-    <p>FOR BEST SALE ONLY</p>
-    <a href="addf.php" class="btn">Add New Product</a>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Rating</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-          $result1 = mysqli_query($conn, "SELECT * FROM products");
-          while ($row = mysqli_fetch_assoc($result1)):
-          ?>
-          <tr>
-            <td><img src="image/<?= $row['image'] ?>" width="80"></td>
-            <td><?= $row['name'] ?></td>
-            <td>$<?= $row['price'] ?></td>
-            <td><?= $row['rating'] ?></td>
-            <td class="actions">
-              <a href="editf.php?id=<?= $row['id'] ?>" class="btn">Edit</a>
-              <a href="?delete_product=<?= $row['id'] ?>" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
-            </td>
-          </tr>
-          <?php endwhile; ?>
-        </tbody>
-      </table>
-    </div>
+    </form>
   </div>
-
-  <!-- SECTION 2: FOR ALL PRODUCT -->
-  <div class="section">
-  <h2>FOR ALL PRODUCT</h2>
-  <a href="uploadMGT.php" class="btn">Add New Product</a>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Price</th>
-          <th>Badge</th>
-          <th>Description</th>
-          <th>Category</th> <!-- ✅ New column -->
-          <th>Image</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php
-        $result2 = mysqli_query($conn, "SELECT * FROM allproduct");
-        while ($row = mysqli_fetch_assoc($result2)):
-        ?>
-        <tr>
-          <td><?= $row['title']; ?></td>
-          <td>₱<?= number_format($row['price'], 2); ?></td>
-          <td><?= $row['badge']; ?></td>
-          <td><?= $row['description']; ?></td>
-          <td><?= $row['category']; ?></td> 
-          <td><img src="<?= $row['image']; ?>" width="60" height="60"></td>
-          <td class="actions">
-            <a href="updateMGT.php?id=<?= $row['id']; ?>" class="btn">Edit</a>
-            <a href="?delete_allproduct=<?= $row['id']; ?>" onclick="return confirm('Are you sure?')" class="btn btn-danger">Delete</a>
-          </td>
-        </tr>
-        <?php endwhile; ?>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-</body>
-</html>
-
       
     </main>
   </div>

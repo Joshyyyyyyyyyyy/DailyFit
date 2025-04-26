@@ -1,77 +1,81 @@
-body {
-    margin: 0;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-image: linear-gradient(109.6deg, #1a1a1a 71.8%, #2b2b2b 71.8%);
-    color: #f0f0f0;
-  }
 
-  h2 {
-    text-align: center;
-    color: #00d4ff;
-    margin-bottom: 30px;
-  }
+  body {
+  margin: 0;
+  padding: 40px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
 
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+form {
+  width: 100%;
+  max-width: 900px;
+  padding: 40px;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px 40px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"] {
+  width: 100%;
+  border-color: #333;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 15px;
+}
+
+input[type="file"] {
+  background-color: #333;
+}
+
+button {
+  grid-column: span 2;
+  padding: 14px;
+  font-size: 16px;
+  background-color: #ffd300;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color:rgb(221, 184, 0);
+}
+
+@media (max-width: 768px) {
   form {
-    max-width: 500px;
-    margin: 0 auto;
-    background-color: #2b2b2b;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
-  }
-
-  label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 6px;
-  }
-
-  input[type="text"],
-  input[type="number"],
-  input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    background-color: #444;
-    color: #fff;
-    margin-bottom: 20px;
-    font-size: 15px;
-  }
-
-  input[type="file"] {
-    background-color: #333;
+    grid-template-columns: 1fr;
+    padding: 25px;
   }
 
   button {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    background-color: #00d4ff;
-    border: none;
-    color: #1a1a1a;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
+    grid-column: span 1;
   }
 
-  button:hover {
-    background-color: #00aacc;
+  h2 {
+    font-size: 22px;
   }
+}
 
-  @media (max-width: 600px) {
-    form {
-      padding: 20px;
-    }
-
-    input, button {
-      font-size: 14px;
-      padding: 10px;
-    }
-
-    h2 {
-      font-size: 20px;
-    }
-  }
